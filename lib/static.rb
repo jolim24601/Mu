@@ -15,11 +15,11 @@ module MuDispatch
         if File.file?(file_path)
           file = File.read(file_path)
           mime_type = Rack::Mime.mime_type(File.extname(file_name))
-          serve(file, mime_type)
-        else
-          @app.call(env)
+          return serve(file, mime_type)
         end
       end
+
+      @app.call(env)
     end
 
     def serve(file, mime_type)

@@ -65,6 +65,16 @@ class ControllerBase
     @session ||= MuDispatch::Session.new(req)
   end
 
+  def verify_authenticity_token
+    unless session["authenticity_token"] == @req.params["authenticity_token"]
+      raise "Missing authenticity token"
+    end
+  end
+
+  def form_authenticity_token
+    session["authenticity_token"] = SecureRandom.urlsafe_base64
+  end
+
   # use this with the router to call action_name (:index, :show, :create...)
   def invoke_action(name)
     send(name)
