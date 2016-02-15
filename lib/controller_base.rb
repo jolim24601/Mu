@@ -3,20 +3,17 @@ require 'active_support/core_ext'
 require 'active_support/inflector'
 require 'erb'
 require_relative './session'
-
-require 'byebug'
+require_relative './flash'
 
 class ControllerBase
   attr_reader :req, :res, :params
 
-  # Setup the controller
   def initialize(req, res, route_params = {})
     @req = req
     @res = res
     @params = req.params.merge(route_params)
   end
 
-  # Helper method to alias @already_built_response
   def already_built_response?
     @already_built_response
   end
@@ -29,6 +26,7 @@ class ControllerBase
     self.res.status = 302
     res['location'] = url
 
+    flash.commit_flash(res)
     session.store_session(res)
   end
 
@@ -42,6 +40,7 @@ class ControllerBase
     res['Content-Type'] = content_type
     res.write(content)
 
+    flash.commit_flash(res)
     session.store_session(res)
   end
 
@@ -57,9 +56,13 @@ class ControllerBase
     render_content(erb_template, 'text/html')
   end
 
+  def flash
+    @flash ||= MuDispatch::Flash.from_session_value(req.cookies)
+  end
+
   # method exposing a `Session` object
   def session
-    @session ||= Session.new(req)
+    @session ||= MuDispatch::Session.new(req)
   end
 
   # use this with the router to call action_name (:index, :show, :create...)

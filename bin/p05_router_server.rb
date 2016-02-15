@@ -23,15 +23,22 @@ class StatusesController < ControllerBase
   end
 end
 
-class Cats2Controller < ControllerBase
+class CatsController < ControllerBase
   def index
-    render_content($cats.to_json, "application/json")
+    flash[:notice] = "HERE COME THE CATS"
+    @cats = $cats
+  end
+
+  def new
+    flash[:notice] = "THIS IS HOW YOU MAKE A CAT"
   end
 end
 
-router = Router.new
+router = MuDispatch::Router.new
 router.draw do
-  get Regexp.new("^/cats$"), Cats2Controller, :index
+  get Regexp.new("^/cats$"), CatsController, :index
+  get Regexp.new("^/cats$"), CatsController, :create
+  get Regexp.new("^/cats/new$"), CatsController, :new
   get Regexp.new("^/cats/(?<cat_id>\\d+)/statuses$"), StatusesController, :index
 end
 
@@ -43,6 +50,6 @@ app = Proc.new do |env|
 end
 
 Rack::Server.start(
- app: app,
- Port: 3000
+  app: app,
+  Port: 3000
 )
