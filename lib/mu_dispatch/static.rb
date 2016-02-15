@@ -1,4 +1,3 @@
-require 'byebug'
 require 'rack'
 
 module MuDispatch

@@ -1,4 +1,5 @@
 require_relative 'db_connection'
+require_relative 'associatable'
 require 'active_support/inflector'
 
 class SQLObject
@@ -31,6 +32,7 @@ class SQLObject
   end
 
   def self.table_name
+    return "humans" if self.to_s == "Human"
     @table_name ||= self.to_s.tableize
   end
 

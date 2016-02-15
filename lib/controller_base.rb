@@ -5,6 +5,8 @@ require 'erb'
 require_relative './mu_dispatch/session'
 require_relative './mu_dispatch/flash'
 
+require 'byebug'
+
 class ControllerBase
   attr_reader :req, :res, :params
 
@@ -49,7 +51,6 @@ class ControllerBase
   def render(template_name)
     controller_name = self.class.to_s.underscore
     template_file = "views/#{controller_name}/#{template_name}.html.erb"
-
     template = File.read(template_file)
 
     erb_template = ERB.new(template).result(binding)

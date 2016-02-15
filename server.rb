@@ -1,32 +1,26 @@
 require 'rack'
-require_relative './lib/controller_base'
-require_relative './lib/mu_dispatch/router'
-require_relative './lib/mu_dispatch/show_exceptions'
-require_relative './lib/mu_dispatch/static'
+require_relative 'lib/mu_dispatch/router'
+require_relative 'lib/mu_dispatch/show_exceptions'
+require_relative 'lib/mu_dispatch/static'
+
+require_relative 'lib/controller_base'
+require_relative 'lib/mu_record/base'
+
+require_relative 'humans_controller'
+require_relative 'cats_controller'
+
 require 'byebug'
-
-class SimpleController < ControllerBase
-  def index
-    # @cats = "Cat cat cat"
-  end
-
-  def create
-    verify_authenticity_token
-    render :index
-  end
-
-  def show
-  end
-
-  def new
-  end
-end
 
 router = MuDispatch::Router.new
 router.draw do
-  get Regexp.new("^/$"), SimpleController, :index
-  get Regexp.new("^/new$"), SimpleController, :new
-  post Regexp.new("^/$"), SimpleController, :create
+  get Regexp.new("^/humans$"), HumansController, :index
+  get Regexp.new("^/humans/new$"), HumansController, :new
+  post Regexp.new("^/humans$"), HumansController, :create
+  get Regexp.new("^/humans/(?<id>\\d+)$"), HumansController, :show
+  get Regexp.new("^/cats$"), CatsController, :index
+  get Regexp.new("^/cats/new$"), CatsController, :new
+  post Regexp.new("^/cats$"), CatsController, :create
+  get Regexp.new("^/cats/(?<id>\\d+)$"), CatsController, :show
 end
 
 app = Rack::Builder.app do
