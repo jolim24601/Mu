@@ -1,8 +1,8 @@
 require 'rack'
-require_relative '../lib/controller_base'
-require_relative '../lib/router'
-require_relative '../lib/show_exceptions'
-require_relative '../lib/static'
+require_relative './lib/controller_base'
+require_relative './lib/mu_dispatch/router'
+require_relative './lib/mu_dispatch/show_exceptions'
+require_relative './lib/mu_dispatch/static'
 require 'byebug'
 
 class SimpleController < ControllerBase
