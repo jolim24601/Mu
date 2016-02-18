@@ -1,9 +1,9 @@
 require 'active_support'
 require 'active_support/core_ext'
 require 'active_support/inflector'
-require 'erb'
 require_relative './mu_dispatch/session'
 require_relative './mu_dispatch/flash'
+require 'erb'
 
 require 'byebug'
 
@@ -50,7 +50,7 @@ class ControllerBase
   # pass the rendered html to render_content
   def render(template_name)
     controller_name = self.class.to_s.underscore
-    template_file = "views/#{controller_name}/#{template_name}.html.erb"
+    template_file = ROOT_FOLDER + "views/#{controller_name}/#{template_name}.html.erb"
     template = File.read(template_file)
 
     erb_template = ERB.new(template).result(binding)

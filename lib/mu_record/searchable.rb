@@ -6,6 +6,8 @@ module Searchable
     where_line = params.map { |k, v| "#{k} = ?" }.join(" AND ")
     attr_values = params.values
 
+    
+
     row = DBConnection.execute(<<-SQL, *attr_values)
       SELECT
         #{table_name}.*

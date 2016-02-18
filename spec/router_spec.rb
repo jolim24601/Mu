@@ -1,8 +1,9 @@
 require 'rack'
-require 'router'
+require 'mu_dispatch/route'
+require 'mu_dispatch/router'
 require 'controller_base'
 
-describe Route do
+describe MuDispatch::Route do
   let(:req) { Rack::Request.new({'rack-input' => {}}) }
   let(:res) { Rack::MockResponse.new('200', {}, []) }
 
@@ -12,21 +13,21 @@ describe Route do
 
   describe "#matches?" do
     it "matches simple regular expression" do
-      index_route = Route.new(Regexp.new("^/users$"), :get, "x", :x)
+      index_route = MuDispatch::Route.new(Regexp.new("^/users$"), :get, "x", :x)
       allow(req).to receive(:path) { "/users" }
       allow(req).to receive(:request_method) { 'GET' }
       expect(index_route.matches?(req)).to be_truthy
     end
 
     it "matches regular expression with capture" do
-      index_route = Route.new(Regexp.new("^/users/(?<id>\\d+)$"), :get, "x", :x)
+      index_route = MuDispatch::Route.new(Regexp.new("^/users/(?<id>\\d+)$"), :get, "x", :x)
       allow(req).to receive(:path) { "/users/1" }
       allow(req).to receive(:request_method) { 'GET' }
       expect(index_route.matches?(req)).to be_truthy
     end
 
     it "correctly doesn't matche regular expression with capture" do
-      index_route = Route.new(Regexp.new("^/users/(?<id>\\d+)$"), :get, "UsersController", :index)
+      index_route = MuDispatch::Route.new(Regexp.new("^/users/(?<id>\\d+)$"), :get, "UsersController", :index)
       allow(req).to receive(:path) { "/statuses/1" }
       allow(req).to receive(:request_method) { 'GET' }
       expect(index_route.matches?(req)).to be_falsey
@@ -39,8 +40,7 @@ describe Route do
 
     it "instantiates controller and invokes action" do
       # reader beware. hairy adventures ahead.
-      # this is really checking way too much implementation,
-      # but tests the aproach recommended in the project
+      # this is really checking way too much implementation
       allow(req).to receive(:path) { "/users" }
 
       dummy_controller_class = DummyController
@@ -50,13 +50,13 @@ describe Route do
         dummy_controller_instance
       end
       expect(dummy_controller_instance).to receive(:invoke_action)
-      index_route = Route.new(Regexp.new("^/users$"), :get, dummy_controller_class, :index)
+      index_route = MuDispatch::Route.new(Regexp.new("^/users$"), :get, dummy_controller_class, :index)
       index_route.run(req, res)
     end
   end
 end
 
-describe Router do
+describe MuDispatch::Router do
   let(:req) { Rack::Request.new({'rack-input' => {}}) }
   let(:res) { Rack::MockResponse.new('200', {}, []) }
 
@@ -100,7 +100,7 @@ describe Router do
 
   describe "http method (get, put, post, delete)" do
     it "adds methods get, put, post and delete" do
-      router = Router.new
+      router = MuDispatch::Router.new
       expect((router.methods - Class.new.methods)).to include(:get)
       expect((router.methods - Class.new.methods)).to include(:put)
       expect((router.methods - Class.new.methods)).to include(:post)
@@ -108,7 +108,7 @@ describe Router do
     end
 
     it "adds a route when an http method method is called" do
-      router = Router.new
+      router = MuDispatch::Router.new
       router.get Regexp.new("^/users$"), ControllerBase, :index
       expect(router.routes.count).to eq(1)
     end
@@ -124,7 +124,7 @@ describe Router do
         post post_route
       end
 
-      router = Router.new
+      router = MuDispatch::Router.new
 
       expect(router).to receive(:get).with(index_route)
       expect(router).to receive(:post).with(post_route)

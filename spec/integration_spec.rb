@@ -1,6 +1,8 @@
 require 'rack'
 require 'controller_base'
-require 'router'
+require 'mu_dispatch/session'
+require 'mu_dispatch/route'
+require 'mu_dispatch/router'
 
 describe "the symphony of things" do
   let(:req) { Rack::Request.new({'rack.input' => ''}) }
@@ -26,7 +28,7 @@ describe "the symphony of things" do
 
   describe "routes and params" do
     it "route instantiates controller and calls invoke action" do
-      route = Route.new(Regexp.new("^/statuses/(?<id>\\d+)$"), :get, Ctrlr, :route_render)
+      route = MuDispatch::Route.new(Regexp.new("^/statuses/(?<id>\\d+)$"), :get, Ctrlr, :route_render)
       allow(req).to receive(:path) { "/statuses/1" }
       allow(req).to receive(:request_method) { 'GET' }
       route.run(req, res)
@@ -34,7 +36,7 @@ describe "the symphony of things" do
     end
 
     it "route adds to params" do
-      route = Route.new(Regexp.new("^/statuses/(?<id>\\d+)$"), :get, Ctrlr, :route_does_params)
+      route = MuDispatch::Route.new(Regexp.new("^/statuses/(?<id>\\d+)$"), :get, Ctrlr, :route_does_params)
       allow(req).to receive(:path) { "/statuses/1" }
       allow(req).to receive(:request_method) { 'GET' }
       route.run(req, res)
@@ -46,7 +48,7 @@ describe "the symphony of things" do
     let(:ctrlr) { Ctrlr.new(req, res) }
 
     it "exposes a session via the session method" do
-      expect(ctrlr.session).to be_instance_of(Session)
+      expect(ctrlr.session).to be_instance_of(MuDispatch::Session)
     end
 
     it "saves the session after rendering content" do
@@ -56,7 +58,8 @@ describe "the symphony of things" do
       expect(res.headers['Set-Cookie']).to_not be_empty
       cookie_str = res.headers['Set-Cookie']
       cookie_val = Rack::Utils.parse_query(cookie_str)
-      cookie_str = cookie_val['_mu_app']
+      debugger
+      cookie_str = cookie_val['/\n_mu_app']
       cookie_hash = JSON.parse(cookie_str)
       expect(cookie_hash["token"]).to eq("testing")
     end

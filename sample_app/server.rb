@@ -1,15 +1,13 @@
 require 'rack'
-require_relative 'lib/mu_dispatch/router'
-require_relative 'lib/mu_dispatch/show_exceptions'
-require_relative 'lib/mu_dispatch/static'
+require_relative '../lib/mu_dispatch/router'
+require_relative '../lib/mu_dispatch/show_exceptions'
+require_relative '../lib/mu_dispatch/static'
 
-require_relative 'lib/controller_base'
-require_relative 'lib/mu_record/base'
+require_relative '../lib/controller_base'
+require_relative '../lib/mu_record/base'
 
-require_relative 'humans_controller'
-require_relative 'cats_controller'
-
-require 'byebug'
+require_relative 'controllers/humans_controller'
+require_relative 'controllers/cats_controller'
 
 router = MuDispatch::Router.new
 router.draw do

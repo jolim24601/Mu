@@ -1,4 +1,4 @@
-require_relative 'human'
+require_relative '../models/human'
 
 class HumansController < ControllerBase
   def new

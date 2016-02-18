@@ -1,8 +1,8 @@
 require 'rack'
-require 'session'
+require 'mu_dispatch/session'
 require 'controller_base'
 
-describe Session do
+describe MuDispatch::Session do
   let(:req) { Rack::Request.new({ 'rack.input' => {} }) }
   let(:res) { Rack::Response.new([], '200', {}) }
   let(:cook) { { "_mu_app" => { 'xyz' => 'abc' }.to_json } }
@@ -75,7 +75,7 @@ describe ControllerBase do
 
   describe "#session" do
     it "returns a session instance" do
-      expect(cats_controller.session).to be_a(Session)
+      expect(cats_controller.session).to be_a(MuDispatch::Session)
     end
 
     it "returns the same instance on successive invocations" do

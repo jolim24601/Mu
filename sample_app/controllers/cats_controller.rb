@@ -1,4 +1,4 @@
-require_relative 'cat'
+require_relative '../models/cat'
 
 class CatsController < ControllerBase
   def index
