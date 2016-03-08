@@ -63,8 +63,9 @@ or:
 
     flash.now[:some_key] = "Thanks for signing up!"
 
- ### Database configuration
- Currently only sqlite3 is supported by Mu. To define your app's schema, create a .sql file in the root directory. Ex:
+### Database configuration
+
+Currently only sqlite3 is supported by Mu. To define your app's schema, create a .sql file in the root directory. Ex:
 
      CREATE TABLE cats (
        id INTEGER PRIMARY KEY,
@@ -78,6 +79,6 @@ Then, in your command line:
 
 `cat db.sql | sqlite3 database.db`
 
- ### Static Assets
+### Static Assets
 
 Serve static assets like images simply by including them in your app/public folder
